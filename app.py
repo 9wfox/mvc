@@ -39,6 +39,12 @@ class Application(object):
         2. 创建 tornado.web.Application。
         3. 根据配置情况(DEBUG)，创建子进行执行。
     """
+    port = property(lambda self: self._port)
+    handlers = property(lambda self: self._handlers)
+    processes = property(lambda self: __conf__.DEBUG and 1 or cpu_count())
+    processes = 1
+    settings = property(lambda self: __conf__.__dict__)
+
 
     def __init__(self, port = None, callback = None):
         self._port = port or __conf__.PORT
@@ -46,13 +52,6 @@ class Application(object):
         self._handlers = self._get_handlers()
         self._webapp = self._get_webapp()
         self._parent = getpid()
-
-
-    port = property(lambda self: self._port)
-    handlers = property(lambda self: self._handlers)
-    #processes = property(lambda self: __conf__.DEBUG and 1 or cpu_count())
-    processes = property(lambda self: 1)
-    settings = property(lambda self: __conf__.__dict__)
 
 
     def _get_handlers(self):
@@ -82,6 +81,7 @@ class Application(object):
             创建 tornado.web.Application
         """
         settings = {
+            "PORT"          : self._port,
             "static_path"   : app_path(__conf__.STATIC_DIR_NAME),
             "template_path" : app_path(__conf__.TEMPLATE_DIR_NAME),
             "debug"         : __conf__.DEBUG,
@@ -91,6 +91,7 @@ class Application(object):
             "xsrf_cookies"  : __conf__.XSRF_COOKIES,
         }
 
+        self.settings.update(settings)
         return WebApplication(self._handlers, **settings)
 
 
