@@ -5,11 +5,6 @@
 
     分布式文件系统辅助方法
 
-
-    作者: Q.yuhen
-    创建: 2011-08-24
-
-    历史:
 """
 
 from os.path import join as path_join, basename

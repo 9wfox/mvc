@@ -6,10 +6,6 @@
     LogicContext 封装了逻辑代码执行所需的上下文环境和对象。
     应该使用 with sgement 执行 LogicContext，确保资源被释放。
 
-
-    作者: Q.yuhen
-    创建: 2011-07-31
-
     历史:
         2011-08-04  * 增加 _redis_send_srv_pack。
         2011-08-07  + 增加 get_context 获取有效上下文对象。
@@ -25,7 +21,7 @@ from hashlib import md5
 from threading import local
 
 from redis import Redis
-from pymongo import Connection as MongoConnection
+from pymongo import MongoClient
 from gridfs import GridFS
 
 
@@ -141,7 +137,7 @@ class LogicContext(object):
             name = __conf__.DB_NAME
 
         if not self._db_conn:
-            self._db_conn = MongoConnection(host = self._db_host, network_timeout = __conf__.SOCK_TIMEOUT)
+            self._db_conn = MongoClient(host = self._db_host, network_timeout = __conf__.SOCK_TIMEOUT)
             
         return self._db_conn[name]
 
