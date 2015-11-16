@@ -87,11 +87,9 @@ class LogicContext(object):
     # 多线程独立存储
     _thread_local = local()
 
-    def __init__(self, cache_hosts = None, db_host = None):
+    def __init__(self, cache_hosts = None):
         self._cache_hashs = ConsistentHash.get(cache_hosts or __conf__.CACHE_SERVERS)
         self._caches = {}
-        self._db_host = db_host or __conf__.DB_HOST
-        self._db_conn = None
 
 
     def __enter__(self):
@@ -113,9 +111,6 @@ class LogicContext(object):
         for cache in self._caches.itervalues():
             cache.connection_pool.disconnect()
 
-        if self._db_conn:
-            self._db_conn.disconnect()
-
 
     def get_cache(self, name):
         host = self._cache_hashs.get_host(name)
@@ -132,25 +127,38 @@ class LogicContext(object):
         return self.get_cache(name)
 
 
-    def get_db(self, name = None):
-        if not name:
-            name = __conf__.DB_NAME
+    @classmethod
+    def get_mongoclient(cls, dbhost = None, dbname = None):
+        if not dbhost:
+            dbhost = dbhost or __conf__.DB_HOST
 
-        if not self._db_conn:
-            self._db_conn = MongoClient(host = self._db_host, network_timeout = __conf__.SOCK_TIMEOUT)
-            
-        return self._db_conn[name]
+        if not dbname:
+            dbname = dbname or __conf__.DB_NAME
 
+        _attr = '__mongoclient__' + dbhost
+        if not hasattr(cls, _attr):
+            setattr(cls, _attr, MongoClient(host = dbhost, socketTimeoutMS= __conf__.SOCK_TIMEOUT))
 
-    def get_collection(self, name, db_name = None):
-        return self.get_db(db_name)[name]
+        return getattr(cls, _attr)[dbname]
 
+    @classmethod
+    def get_mysql(cls, host, user, passwd, db):
+        import pymysql
+        _attr = '__mssql__' + host
 
-    def get_gfs(self, name = None):
-        if not name:
-            name = __conf__.GFS_NAME
+        if not hasattr(cls, _attr):
+            setattr(cls, _attr, pymysql.connect(host=host,user=user,passwd=passwd,db=db,charset='utf8'))
 
-        return GridFS(self.get_db(name)) 
+        return getattr(cls, _attr)
+
+    def get_gfs(self, dbhost = None, dbname = None):
+        if not dbhost:
+            dbhost = __conf__.DB_HOST
+
+        if not dbname:
+            dbname = __conf__.GFS_NAME
+
+        return GridFS(self.get_mongoclient(dbhost = dbhost, dbname = dbname))
 
 
     @classmethod
