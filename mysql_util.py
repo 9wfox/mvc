@@ -19,12 +19,34 @@ def m_execute(sql, **kwargs):
     conn.cursor().execute(sql)
     conn.commit()
 
-def m_query(sql, **kwargs):
+def m_query(sql, fields,**kwargs):
     """
         查询保存数据
     """
     conn = Conn(**kwargs)
     cur = conn.cursor()
     cur.execute(sql)
-    return cur.fetchall()
+    rs = cur.fetchall()
+    data = []
+    if fields:
+        for r in rs:
+            d = dict((fields[i], r[i]) for i in range(len(r)))
+            data.append(d)
+
+    return data
+
+
+def m_query_one(sql, fields,**kwargs):
+    """
+        查询保存数据
+    """
+    conn = Conn(**kwargs)
+    cur = conn.cursor()
+    cur.execute(sql)
+    rs = cur.fetchall()
+
+    if rs:
+        rs = rs[0]
+        return dict((fields[i], rs[i]) for i in range(len(rs)))
+    return {}
 
