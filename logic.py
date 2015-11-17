@@ -152,11 +152,8 @@ class LogicContext(object):
         return getattr(cls, _attr)
 
     def get_gfs(self, dbhost = None, dbname = None):
-        if not dbhost:
-            dbhost = __conf__.DB_HOST
-
         if not dbname:
-            dbname = __conf__.GFS_NAME
+            dbname = dbname or __conf__.GFS_NAME
 
         return GridFS(self.get_mongoclient(dbhost = dbhost, dbname = dbname))
 
