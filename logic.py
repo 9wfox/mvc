@@ -144,6 +144,7 @@ class LogicContext(object):
     @classmethod
     def get_mysql(cls, host, user, passwd, db):
         import pymysql
+        return pymysql.connect(host=host,user=user,passwd=passwd,db=db,charset='utf8')
         _attr = '__mssql__' + host
 
         if not hasattr(cls, _attr):
