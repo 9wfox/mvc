@@ -21,7 +21,7 @@ from hashlib import md5
 from threading import local
 
 from redis import Redis
-from pymongo import MongoClient
+import pymongo
 from gridfs import GridFS
 
 
@@ -137,7 +137,7 @@ class LogicContext(object):
 
         _attr = '__mongoclient__' + dbhost
         if not hasattr(cls, _attr):
-            setattr(cls, _attr, MongoClient(host = dbhost, socketTimeoutMS= __conf__.SOCK_TIMEOUT))
+            setattr(cls, _attr, pymongo.MongoClient(host = dbhost, socketTimeoutMS= __conf__.SOCK_TIMEOUT))
 
         return getattr(cls, _attr)[dbname]
 

@@ -17,7 +17,7 @@
 PORT = 9999
 
 # 网络连接超时(秒)
-SOCK_TIMEOUT = 10
+SOCK_TIMEOUT = 120
 
 # SESSION 过期时间(秒)
 SESSION_EXPIRE = 60 * 10
