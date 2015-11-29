@@ -1,5 +1,5 @@
 #encoding=utf8
-import os
+import os, re
 import time
 from bson.objectid import ObjectId
 from mvc import *
@@ -19,23 +19,6 @@ def m_execute(sql, **kwargs):
     conn.cursor().execute(sql)
     conn.commit()
 
-def m_query(sql, fields,**kwargs):
-    """
-        查询保存数据
-    """
-    conn = Conn(**kwargs)
-    cur = conn.cursor()
-    cur.execute(sql)
-    rs = cur.fetchall()
-    data = []
-    if fields:
-        for r in rs:
-            d = dict((fields[i], r[i]) for i in range(len(r)))
-            data.append(d)
-
-    return data
-
-
 def m_query_one(sql, fields,**kwargs):
     """
         查询保存数据
@@ -49,4 +32,37 @@ def m_query_one(sql, fields,**kwargs):
         rs = rs[0]
         return dict((fields[i], rs[i]) for i in range(len(rs)))
     return {}
+
+
+def m_query(sql, fields, **kwargs):
+    """
+        查询保存数据
+    """
+    page_index = int(kwargs.pop('page_index', 1))
+    page_size = int(kwargs.pop('page_size', 3))
+    findall = kwargs.pop('findall', None)
+
+    sql_count = re.sub("select.*from", "select count(*) from", sql)
+    count = m_query_one(sql_count, ('count', ))['count']
+
+    if count and findall:
+        page_index = 1
+        page_size = count
+
+    sql += " limit {},{}".format((page_index-1)*page_size,page_size)
+    page_num = (count + page_size - 1)/ page_size
+    page = dict(page_index = page_index, page_size = page_size, page_num = page_num,allcount=count)
+
+    conn = Conn(**kwargs)
+    cur = conn.cursor()
+    cur.execute(sql)
+    rs = cur.fetchall()
+    data = []
+    if fields:
+        for r in rs:
+            d = dict((fields[i], r[i]) for i in range(len(r)))
+            data.append(d)
+
+    return data, page
+
 
