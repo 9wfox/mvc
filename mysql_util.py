@@ -39,7 +39,7 @@ def m_query(sql, fields, **kwargs):
         查询保存数据
     """
     page_index = int(kwargs.pop('page_index', 1))
-    page_size = int(kwargs.pop('page_size', 3))
+    page_size = int(kwargs.pop('page_size', 10))
     findall = kwargs.pop('findall', None)
 
     sql_count = re.sub("select.*from", "select count(*) from", sql)
