@@ -49,9 +49,13 @@ def m_query(sql, fields, **kwargs):
         page_index = 1
         page_size = count
 
-    sql += " limit {},{}".format((page_index-1)*page_size,page_size)
     page_num = (count + page_size - 1)/ page_size
+    if page_num < page_index:
+        page_index = page_num
     page = dict(page_index = page_index, page_size = page_size, page_num = page_num,allcount=count)
+    if page_num == 0: return {}, page
+
+    sql += " limit {},{}".format((page_index-1)*page_size,page_size)
 
     conn = Conn(**kwargs)
     cur = conn.cursor()
