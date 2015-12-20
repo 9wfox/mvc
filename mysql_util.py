@@ -69,4 +69,10 @@ def m_query(sql, fields, **kwargs):
 
     return data, page
 
+def m_count(sql, *kwargs):
+    """
+        查询个数
+    """
+
+    return m_query_one(sql, ('count', ))['count']
 
