@@ -90,6 +90,7 @@ class LogicContext(object):
     def __init__(self, cache_hosts = None):
         self._cache_hashs = ConsistentHash.get(cache_hosts or __conf__.CACHE_SERVERS)
         self._caches = {}
+        self._cache_cluster = None
 
 
     def __enter__(self):
@@ -111,6 +112,9 @@ class LogicContext(object):
         for cache in self._caches.itervalues():
             cache.connection_pool.disconnect()
 
+        if self._cache_cluster:
+            self._cache_cluster.connection_pool.disconnect()
+            self._cache_cluster = None
 
     def get_cache(self, name):
         host = self._cache_hashs.get_host(name)
@@ -121,6 +125,15 @@ class LogicContext(object):
         self._caches[host] = cache
 
         return cache
+
+
+    def get_redis_cluster(self, name):
+        import redis
+        from rediscluster import StrictRedisCluster
+        serverip='127.0.0.1'
+        startup_nodes=[{"host": serverip,"port": i} for i in xrange(7000, 7005)]
+        self._cache_cluster = StrictRedisCluster(startup_nodes=startup_nodes)
+        return self._cache_cluster
 
 
     def get_mq(self, name):
