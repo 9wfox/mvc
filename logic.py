@@ -121,7 +121,7 @@ class LogicContext(object):
         if host in self._caches: return self._caches[host]
 
         h, p = host.split(":") if ":" in host else (host, 6379)
-        cache = Redis(host = h, port = int(p), socket_timeout = __conf__.SOCK_TIMEOUT)
+        cache = Redis(host = h, port = int(p), socket_timeout = __conf__.SOCK_TIMEOUT,password=__conf__.CACHE_PASSWORD)
         self._caches[host] = cache
 
         return cache

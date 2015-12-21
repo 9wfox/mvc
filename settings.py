@@ -51,6 +51,7 @@ ENCRYPT_KEY = "UfddHJa2H$43Lfd*saFf/da"
 
 # 缓存服务器
 CACHE_SERVERS = ("localhost", )
+CACHE_PASSWORD = None
 
 # 数据库服务器
 DB_HOST = "localhost"
