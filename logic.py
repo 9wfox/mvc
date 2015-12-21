@@ -127,11 +127,11 @@ class LogicContext(object):
         return cache
 
 
-    def get_redis_cluster(self, name):
+    def get_redis_cluster(self):
         import redis
         from rediscluster import StrictRedisCluster
-        serverip='127.0.0.1'
-        startup_nodes=[{"host": serverip,"port": i} for i in xrange(7000, 7005)]
+        serverip='101.200.214.57'
+        startup_nodes=[{"host": serverip,"port": i} for i in xrange(7000, 7006)]
         self._cache_cluster = StrictRedisCluster(startup_nodes=startup_nodes)
         return self._cache_cluster
 
