@@ -2,6 +2,7 @@ wget https://bootstrap.pypa.io/ez_setup.py
 python ez_setup.py
 easy_install tornado==4.0
 easy_install redis
+easy_install redis-py-cluster
 easy_install pymongo
 easy_install pymysql
 easy_install msgpack-python
