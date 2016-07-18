@@ -41,6 +41,7 @@ def m_query(sql, fields, **kwargs):
     page_index = int(kwargs.pop('page_index', 1))
     page_size = int(kwargs.pop('page_size', 10))
     findall = kwargs.pop('findall', None)
+    sorts = kwargs.pop('sorts', None)
 
     sql_count = re.sub("select.*from", "select count(*) from", sql)
     count = m_query_one(sql_count, ('count', ))['count']
@@ -53,9 +54,11 @@ def m_query(sql, fields, **kwargs):
     if page_num < page_index:
         page_index = page_num
     page = dict(page_index = page_index, page_size = page_size, page_num = page_num,allcount=count)
-    if page_num == 0: return {}, page
+    if page_num == 0: return [], page
 
     sql += " limit {},{}".format((page_index-1)*page_size,page_size)
+    if sorts:
+        sql += ' {}'.format(sorts)
 
     conn = Conn(**kwargs)
     cur = conn.cursor()
