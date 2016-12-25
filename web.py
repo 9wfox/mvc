@@ -46,9 +46,6 @@ class Session(object):
                 self.assertEqual(session.a, 1)
                 self.assertEqual(session.b, "Hello, World!")
 
-                for k, v in session:
-                    print k, v, type(v)
-
                 del session.a
                 self.assertIsNone(session.a)
     """
@@ -148,7 +145,6 @@ class BaseHandler(RequestHandler):
             可以通过 send_error 向错误模板页发送数据。
         """
         template_name = "{0}.html".format(status_code)
-        print status_code
         if not exists(template_path(template_name)): template_name = "error.html"
         if not exists(template_path(template_name)): return super(BaseHandler, self).get_error_html(status_code, **kwargs)
         

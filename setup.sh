@@ -11,3 +11,5 @@ unzip pyDes-2.0.1.zip
 cd pyDes-2.0.1
 python setup.py install
 
+easy_install pyDes
+easy_install pyyaml
