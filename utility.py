@@ -11,6 +11,7 @@
         2011-08-27  * 重构 get_pys_members，改名 get_members。
 """
 
+from datetime import datetime
 from sys import argv
 from os import walk, listdir
 from os.path import abspath, join as path_join, dirname, basename, splitext
@@ -151,7 +152,7 @@ def conv_mongo_object(d):
             (1) Unicode 还原为 str。
             (2) ObjectId 还原为 str。
     """
-    if isinstance(d, (unicode, ObjectId)):
+    if isinstance(d, (unicode, ObjectId, datetime)):
         return str(d)
     elif isinstance(d, (list, tuple)):
         return [conv_mongo_object(x) for x in d]

@@ -30,7 +30,8 @@ def m_query_one(sql, fields,**kwargs):
 
     if rs:
         rs = rs[0]
-        return dict((fields[i], rs[i]) for i in range(len(rs)))
+        rs = dict((fields[i], rs[i]) for i in range(len(rs)))
+        return mongo_conv(rs)
     return {}
 
 
@@ -38,7 +39,7 @@ def m_query(sql, fields, **kwargs):
     """
         查询保存数据
     """
-    page_index = int(kwargs.pop('page_index', 1))
+    page_index = int(kwargs.pop('page_index', 1)) or 1
     page_size = int(kwargs.pop('page_size', 10))
     findall = kwargs.pop('findall', None)
     sorts = kwargs.pop('sorts', None)
@@ -70,12 +71,12 @@ def m_query(sql, fields, **kwargs):
             d = dict((fields[i], r[i]) for i in range(len(r)))
             data.append(d)
 
-    return data, page
+    return mongo_conv(data), page
 
 def m_count(sql, *kwargs):
     """
         查询个数
     """
 
-    return m_query_one(sql, ('count', ))['count']
+    return m_query_one(sql, ('count', )).get('count') or 0
 
