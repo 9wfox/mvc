@@ -120,10 +120,6 @@ def get_members(pkg_name, module_filter = None, member_filter = None):
             member_filter   成员过滤器 def member_filter(module_member_object)
     """
     modules = get_modules(pkg_name, module_filter)
-    '''try:
-        modules = get_modules(pkg_name, module_filter)
-    except:
-        return {}'''
 
     ret = {}
     for m in modules:
