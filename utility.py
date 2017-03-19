@@ -104,7 +104,8 @@ def get_modules(pkg_name, module_filter = None):
             module_filter   模块名过滤器 def (module_name)
     """
     path = app_path(pkg_name)
-    py_filter = lambda f: all((fnmatch(f, "*.py"), not f.startswith("__"), module_filter and module_filter(f) or True))
+    #py_filter = lambda f: all((fnmatch(f, "*.py"), not f.startswith("__"), module_filter and module_filter(f) or True))
+    py_filter = lambda f: all((fnmatch(f, "*.pyc") or fnmatch(f, "*.py"), not f.startswith("__"), module_filter and module_filter(f) or True))
     names = [splitext(n)[0] for n in listdir(path) if py_filter(n)]
     return [__import__("{0}.{1}".format(pkg_name, n)).__dict__[n] for n in names]
 
