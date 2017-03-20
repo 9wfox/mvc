@@ -21,12 +21,12 @@
 """
 
 from sys import stderr, argv
+from json import loads, dumps
 from os import wait, fork, getpid, getppid, killpg, waitpid
 from multiprocessing import cpu_count
 from signal import signal, pause, SIGCHLD, SIGINT, SIGTERM, SIGUSR1, SIGUSR2, SIG_IGN
 
 from redis import Redis, ConnectionError
-from msgpack import loads, dumps
 
 from logic import LogicContext, get_context
 from utility import get_members, staticclass

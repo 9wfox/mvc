@@ -16,6 +16,7 @@
                     * 在 BaseHandler 中自动创建上下文对象。
 """
 
+from json import loads, dumps
 from os.path import exists
 from functools import wraps as func_wraps
 from inspect import isclass, ismethod, isfunction
@@ -28,7 +29,7 @@ from tornado.web import RequestHandler, ErrorHandler, authenticated as auth
 
 from logic import LogicContext
 from cache import op_cache
-from utility import template_path, loads, dumps
+from utility import template_path
 
 
 
