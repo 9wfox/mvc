@@ -21,7 +21,12 @@ from base64 import b64encode, b64decode
 from inspect import ismodule, getmembers
 
 from bson.objectid import ObjectId
-from pyDes import des, triple_des, PAD_PKCS5, CBC
+try:
+    from pyDes import des, triple_des, PAD_PKCS5, CBC
+    _enc_key = lambda length: __conf__.ENCRYPT_KEY.zfill(length)[:length]
+    _cipher = lambda: des(_enc_key(8), mode = CBC, IV = "\0" * 8, padmode = PAD_PKCS5)
+except:
+    pass
 
 
 
@@ -137,7 +142,7 @@ def set_default_encoding():
     reload(sys)
 
     lang, coding = locale.getdefaultlocale()
-    sys.setdefaultencoding(coding)
+    #sys.setdefaultencoding(coding)
 
 
 
@@ -168,10 +173,6 @@ def hash2(o):
     """
     return md5(str(o)).hexdigest()
 
-
-
-_enc_key = lambda length: __conf__.ENCRYPT_KEY.zfill(length)[:length]
-_cipher = lambda: des(_enc_key(8), mode = CBC, IV = "\0" * 8, padmode = PAD_PKCS5)
 
 def encrypt(s, base64 = False):
     """
